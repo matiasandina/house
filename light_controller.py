@@ -45,7 +45,12 @@ class LightController(object):
         self.pin_zip = zip([self.red_pin, self.green_pin, self.blue_pin], 
             [self.pwm_red, self.pwm_green, self.pwm_blue])
 
+        # light lux target
+        self.light_target = 50
+        self.light_duty_cycle = 100
+
         # Config lights on-off cycle here
+        # this range is [lights_on, lights_off)
         self.lights_on = 7
         self.lights_off = 19
         
@@ -80,8 +85,12 @@ class LightController(object):
         self.lux = round(self.light_sensor.lux)
         print(f"{current_hour} h: {self.lux} lux")
         # evaluate between
-        if self.lights_on <= current_hour <= self.lights_off:
-            self.pwm_blue.ChangeDutyCycle(100)
+        # this range is [lights_on, lights_off)
+        if self.lights_on <= current_hour < self.lights_off:
+            self.pwm_blue.ChangeDutyCycle(self.light_duty_cycle)
+            while self.light_sensor.lux > self.light_target:
+                self.light_duty_cycle = self.light_duty_cycle - 5 
+                self.pwm_blue.ChangeDutyCycle(self.light_duty_cycle)
         else:
             self.pwm_blue.ChangeDutyCycle(0)
         if self.save_data:    
