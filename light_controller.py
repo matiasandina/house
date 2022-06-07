@@ -47,7 +47,7 @@ class LightController(object):
 
         # light lux target
         self.light_target = 50
-        self.light_duty_cycle = 100
+        self.light_duty_cycle = 8
 
         # Config lights on-off cycle here
         # this range is [lights_on, lights_off)
@@ -88,9 +88,7 @@ class LightController(object):
         # this range is [lights_on, lights_off)
         if self.lights_on <= current_hour < self.lights_off:
             self.pwm_blue.ChangeDutyCycle(self.light_duty_cycle)
-            while self.light_sensor.lux > self.light_target:
-                self.light_duty_cycle = self.light_duty_cycle - 5 
-                self.pwm_blue.ChangeDutyCycle(self.light_duty_cycle)
+            # TODO: implement light modulation to meet target here
         else:
             self.pwm_blue.ChangeDutyCycle(0)
         if self.save_data:    
