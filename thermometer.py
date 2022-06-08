@@ -89,7 +89,10 @@ class Thermometer(object):
             sys.exit(0)
         except:
             print("Unexpected error:", sys.exc_info()[0])
-            sys.exit(2)
+            print(sys.exc_info()[1])
+            print(sys.exc_info()[2])
+            # do not exit!
+            #sys.exit(2)
     
     def write_csv(self):
         # savedir/year/month/day
