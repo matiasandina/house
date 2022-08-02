@@ -69,6 +69,8 @@ class Thermometer(object):
         try:
             # Measure things
             self.temp_value = round(self.temp_sensor.temperature, 1)
+            # C to F conversion for people in the US
+            self.temp_value_f = round(self.temp_value * 9/5 + 32, 1)
             self.hum_value = round(self.temp_sensor.relative_humidity, 1)
             self.current_time = datetime.datetime.now()
             # Display results
@@ -78,7 +80,7 @@ class Thermometer(object):
                 ip = self.getIP()
                 draw.text((5, 5), "IP: " + ip, fill="white", font=font)
                 font = ImageFont.truetype(self.drawfont, 10)
-                draw.text((5, 20), f"T: {self.temp_value} C", fill="white", font=font)
+                draw.text((5, 20), f"T: {self.temp_value} C -- {self.temp_value_f} F", fill="white", font=font)
                 draw.text((5, 40), f"H: {self.hum_value}%", fill="white", font=font)
             if self.save_data:
                 if (self.current_time - self.last_save).total_seconds() > self.save_mins * 60:
