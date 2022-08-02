@@ -47,7 +47,7 @@ class LightController(object):
 
         # light lux target
         self.light_target = 50
-        self.light_duty_cycle = 8
+        self.light_duty_cycle = 100
 
         # Config lights on-off cycle here
         # this range is [lights_on, lights_off)
