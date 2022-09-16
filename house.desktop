@@ -1,0 +1,9 @@
+[Desktop Entry]
+Type=Application
+Comment=house
+Name=house
+Exec=/home/pi/house/dist/house
+Icon=/home/pi/homecage_quantification/docs_img/flow_logo.png
+Terminal=false
+Categories=Utility
+StartupNotify=true
