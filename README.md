@@ -57,7 +57,7 @@ In day to day use, you can just double-click the ./dist/house application and it
 
 Remember to check if the process is running in the Task Manager. You can also use the task manager to kill the program.
 
-![](img/icon_task_manager.png)
+![](img/icon_task_manager.png?raw=true)
 
 Data will be saved into the `dist/` folder when using `house` this way.
 
