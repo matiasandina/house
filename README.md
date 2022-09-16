@@ -31,6 +31,39 @@ green_pin = 10
 blue_pin = 11
 ```
 
+## Usage
+
+You can use this by running the following command in command line.
+
+```
+pi@raspberrypi:~/house $ python3 house.py
+```
+
+Alternatively, you can install this to run in the background using `pyinstaller`
+
+```
+pi@raspberrypi:~/house $ pyinstaller house.py -w -F
+
+```
+
+You can check that this is running by calling
+
+```
+pi@raspberrypi:~/house $ ./dist/house 
+```
+You can also check that the process is running in the Task manager.
+
+In day to day use, you can just double-click the ./dist/house application and it will launch in the background. You can also have a desktop icon. Just copy the provided `house.desktop` and paste it into your desktop. Just a double-click and you are good to go!
+
+Remember to check if the process is running in the Task Manager. You can also use the task manager to kill the program.
+
+![](/img/icon_task_manager.png)
+
+Data will be saved into the `dist/` folder when using `house` this way.
+
+> Beware you might need to edit the path! The provided desktop is hardcoded to `/home/pi/house/dist/house`. If your user or path differs, you will need to tweak this.
+
+
 ## Contribute
 
 This is a preliminary release. File issues to contribute to this project. 
