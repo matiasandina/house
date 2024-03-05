@@ -8,13 +8,17 @@ Code for controlling house light and measuring temperature and humidity using a 
 
 Enabling of i2c ports through `raspi-config` is needed. A python3 installation is also needed to run the program and not detailed in this document. 
 
+> [!CAUTION]
+> Python version has to be greater than 3.7, tested in 3.8+
+
 These required libraries were installed as:
 
 ```
 sudo apt-get install python-rpi.gpio
 sudo apt-get install wiringpi
-sudo -H pip install psutil
+sudo -H pip3 install psutil
 sudo -H pip3 install luma.oled
+sudo pip3 install numpy
 sudo pip3 install adafruit-circuitpython-htu21d
 sudo pip3 install adafruit-circuitpython-bh1750
 ```
