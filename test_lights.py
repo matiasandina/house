@@ -26,7 +26,7 @@ class TestLightController(LightController):
 
 if __name__ == "__main__":
     # Initialize the test controller
-    test_controller = TestLightController(save_data=False)
+    test_controller = TestLightController(save_data=False).__enter__()
 
     # Modify the current_time to the start of the testing period
     test_controller.current_time = datetime.now().replace(hour=0, minute=0, second=0, microsecond=0)
