@@ -8,8 +8,10 @@ Code for controlling house light and measuring temperature and humidity using a 
 
 Enabling of i2c ports through `raspi-config` is needed. A python3 installation is also needed to run the program and not detailed in this document. 
 
+
 > [!CAUTION]
-> Python version has to be greater than 3.7, tested in 3.8+
+> Python < 3.8 will need different environment than what's tested in 3.8+. It's recommended that you use a virtual environment!
+
 
 These required libraries were installed as:
 
