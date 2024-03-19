@@ -21,8 +21,8 @@ class DataSyncer:
         client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
         
         # Assuming you've set up SSH keys for passwordless access
+        print(f"Connecting to {self.nas_user}@{self.nas_ip} at port {self.nas_port}")
         client.connect(self.nas_ip, port=self.nas_port, username=self.nas_user)
-        
         # Determine the remote directory path, creating it if necessary
         remote_dir = os.path.join(self.remote_path, self.mac_address, "data")
         if not os.path.isdir(remote_dir):
@@ -51,7 +51,7 @@ class DataSyncer:
 
 if __name__ == "__main__":
     import time
-    config_path = "db_keys.yaml"  # Path to your YAML configuration file
+    config_path = "secret_db_keys.yaml"  # Path to your YAML configuration file
     data_syncer = DataSyncer(config_path)
     
     while True:
