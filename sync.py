@@ -25,13 +25,18 @@ class DataSyncer:
         
         # Determine the remote directory path, creating it if necessary
         remote_dir = os.path.join(self.remote_path, self.mac_address, "data")
-        stdin, stdout, stderr = client.exec_command(f'mkdir -p {remote_dir}')
-        stderr.read()  # Wait for the directory creation command to complete
+        if not os.path.isdir(remote_dir):
+            print(f"Creating remote directory {remote_dir}")
+            stdin, stdout, stderr = client.exec_command(f'mkdir -p {remote_dir}')
+            stderr.read()  # Wait for the directory creation command to complete
+            print(f"Created {remote_dir}")
         
         # Use rsync to sync the data directory
         #rsync_command = f"rsync -avz -e 'ssh -p {self.nas_port}' {self.local_path}/ {self.nas_user}@{self.nas_ip}:{remote_dir}"
         #os.system(rsync_command)
         scp_command = f"scp -r -P {self.nas_port} {self.local_path}/ {self.nas_user}@{self.nas_ip}:{remote_dir}"
+        print(f"Trying to send data via scp")
+        print(scp_command)
         os.system(scp_command)
 
         client.close()
