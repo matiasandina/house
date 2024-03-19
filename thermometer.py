@@ -103,7 +103,7 @@ class Thermometer(object):
                 draw.text((5, 20), f"T: {self.temp_value} C -- {self.temp_value_f} F", fill="white", font=font)
                 draw.text((5, 40), f"H: {self.hum_value}%", fill="white", font=font)
         except Exception as e:
-            print(f"{self.current_time.isoformat(" ", "seconds")} Error updating display: {e}")
+            print(f"{self.current_time.isoformat(" ", timespec = "seconds")} Error updating display: {e}")
             print(f"Trying to restart display")
             self.restart_oled()
 
