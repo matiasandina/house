@@ -65,15 +65,35 @@ class Thermometer(object):
             print("\nThermometer() terminated with Ctrl+C.")
             sys.exit(0)
 
-    def step(self):
+    def restart_oled(self):
+        """Reinitialize the OLED display."""
         try:
-            # Measure things
+            self.serial = i2c(port=1, address=0x3C)
+            self.oled_device = ssd1306(self.serial, rotate=0)
+            print("OLED display reinitialized.")
+        except:
+            print("Failed to reinitialize I2C mini OLED display.")
+            print("Unexpected error:", sys.exc_info()[0])
+            print(sys.exc_info()[1])
+            print(sys.exc_info()[2])
+            # do not exit!
+            #sys.exit(2)
+
+    def measure(self):
+        """Measure temperature and humidity."""
+        try:
             self.temp_value = round(self.temp_sensor.temperature, 1)
-            # C to F conversion for people in the US
-            self.temp_value_f = round(self.temp_value * 9/5 + 32, 1)
+            self.temp_value_f = round(self.temp_value * 9/5 + 32, 1)  # C to F conversion
             self.hum_value = round(self.temp_sensor.relative_humidity, 1)
-            self.current_time = datetime.datetime.now()
-            # Display results
+        except Exception as e:
+            print(f"Error measuring temperature/humidity: {e}")
+            print(sys.exc_info()[0])
+            print(sys.exc_info()[1])
+            print(sys.exc_info()[2])
+
+    def report(self):
+        """Update the display with the latest measurements."""
+        try:
             with canvas(self.oled_device) as draw:
                 draw.rectangle(self.oled_device.bounding_box, outline="white", fill="black")
                 font = ImageFont.truetype(self.drawfont, 10)
@@ -82,20 +102,11 @@ class Thermometer(object):
                 font = ImageFont.truetype(self.drawfont, 10)
                 draw.text((5, 20), f"T: {self.temp_value} C -- {self.temp_value_f} F", fill="white", font=font)
                 draw.text((5, 40), f"H: {self.hum_value}%", fill="white", font=font)
-            if self.save_data:
-                if (self.current_time - self.last_save).total_seconds() > self.save_mins * 60:
-                    self.write_csv()
-                    self.last_save = self.current_time
-        except SystemExit:
-            print("Exiting...")
-            sys.exit(0)
-        except:
-            print("Unexpected error:", sys.exc_info()[0])
-            print(sys.exc_info()[1])
-            print(sys.exc_info()[2])
-            # do not exit!
-            #sys.exit(2)
-    
+        except Exception as e:
+            print(f"Error updating display: {e}")
+            print(f"Trying to restart display")
+            self.restart_oled()
+
     def write_csv(self):
         # savedir/year/month/day
         directory = os.path.join(os.getcwd(), self.savedir,
@@ -112,6 +123,20 @@ class Thermometer(object):
         else:
             with open(file,'a') as csvfile:
              np.savetxt(csvfile, array_to_save, delimiter=',',fmt='%s', comments='')
+
+
+    def save(self):
+        """Save the data to a CSV file if required."""
+        if (self.current_time - self.last_save).total_seconds() > self.save_mins * 60:
+            self.write_csv()
+            self.last_save = self.current_time
+
+    def step(self):
+        self.measure()
+        self.report()
+        if self.save_data:
+            self.save()
+
 
 if __name__ == '__main__':
     with Thermometer(save_data=True, save_mins=0.1) as temp:
