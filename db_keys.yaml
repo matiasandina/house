@@ -1,0 +1,5 @@
+nas:
+  ip: '192.168.1.100' # example ip
+  port: 22 # example port
+  user: 'your_username' # example user
+  remote_path: '/volume1/user/remote_house' # example port
