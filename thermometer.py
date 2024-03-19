@@ -132,6 +132,7 @@ class Thermometer(object):
             self.last_save = self.current_time
 
     def step(self):
+        self.current_time = datetime.datetime.now()
         self.measure()
         self.report()
         if self.save_data:
