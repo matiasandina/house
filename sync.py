@@ -11,7 +11,7 @@ class DataSyncer:
         self.nas_port = self.config['nas']['port']
         self.nas_user = self.config['nas']['user']
         self.remote_path = self.config['nas']['remote_path']
-        self.local_path = "data"
+        self.local_path = "data" # no slash here since this data dir will not be sent
         
         # Function to get MAC address, assuming it's defined elsewhere in your code
         self.mac_address = self.get_mac().replace(":", "")
@@ -29,8 +29,10 @@ class DataSyncer:
         stderr.read()  # Wait for the directory creation command to complete
         
         # Use rsync to sync the data directory
-        rsync_command = f"rsync -avz -e 'ssh -p {self.nas_port}' {self.local_path}/ {self.nas_user}@{self.nas_ip}:{remote_dir}"
-        os.system(rsync_command)
+        #rsync_command = f"rsync -avz -e 'ssh -p {self.nas_port}' {self.local_path}/ {self.nas_user}@{self.nas_ip}:{remote_dir}"
+        #os.system(rsync_command)
+        scp_command = f"scp -r -P {self.nas_port} {self.local_path}/ {self.nas_user}@{self.nas_ip}:{remote_dir}"
+        os.system(scp_command)
 
         client.close()
 
