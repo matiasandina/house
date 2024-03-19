@@ -37,6 +37,8 @@ green_pin = 10
 blue_pin = 11
 ```
 
+We are using a generic [0.96'' IIC OLED SSD1306](https://www.amazon.com/SSD1306/s?k=SSD1306) to provide feedback regarding the Raspberry Pi IP, Temperature and Humidity.
+
 ## Usage
 
 You can use this by running the following command in command line.
