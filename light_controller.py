@@ -83,7 +83,7 @@ class LightController(object):
         self.current_time = datetime.datetime.now()
         current_hour = self.current_time.hour
         self.lux = round(self.light_sensor.lux)
-        print(f"{current_hour} h: {self.lux} lux")
+        print(f"[{self.current_time.isoformat()}] -- {self.lux} lux", end="\r")
         # evaluate between
         # this range is [lights_on, lights_off)
         if self.lights_on <= current_hour < self.lights_off:
