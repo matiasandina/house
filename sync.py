@@ -11,7 +11,7 @@ class DataSyncer:
         self.nas_port = self.config['nas']['port']
         self.nas_user = self.config['nas']['user']
         self.remote_path = self.config['nas']['remote_path']
-        self.local_path = "/data"
+        self.local_path = "data"
         
         # Function to get MAC address, assuming it's defined elsewhere in your code
         self.mac_address = self.get_mac().replace(":", "")
