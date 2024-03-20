@@ -43,7 +43,7 @@ def get_latest_data(base_path):
         data[mac] = {"temp": float(temp), "hum": float(hum), "lux": int(lux)}
     return data
 
-def generate_table(data):
+def generate_table(data, box_mapping):
     entries_with_names = []
     for mac, details in data.items():
         box_name = next((name for name, address in box_mapping.items() if address == mac), 'Unknown Box')
@@ -129,9 +129,18 @@ def fetch_nas_data(nas_ip, nas_port, username, password, remote_path):
     Input('interval-component', 'n_intervals')
 )
 def update_metrics(n):
-    data = fetch_nas_data(nas_ip=nas_ip, nas_port=nas_port, username=username, password=password, remote_path=remote_path)
+    # READING SECRET KEYS FOR CONFIGS
+    # it might not be as efficient to read this every time, but it will work for now
+    config = read_secret_keys('secret_db_keys.yaml')
+    box_mapping = config['macs']
+    nas_ip = config['nas']['ip']
+    nas_port = config['nas']['port']
+    nas_user = config['nas']['user']
+    nas_password = config['nas']['password']
+    remote_path = config['nas']['remote_path']
+    data = fetch_nas_data(nas_ip=nas_ip, nas_port=nas_port, username=nas_user, password=nas_password, remote_path=remote_path)
     pprint.PrettyPrinter(depth=4).pprint(data)
-    return [generate_table(data)]
+    return [generate_table(data, box_mapping)]
 
 app.layout = html.Div([
     html.H1('Sensor Data Dashboard'),
@@ -144,10 +153,4 @@ app.layout = html.Div([
 ])
 
 if __name__ == '__main__':
-    config = read_secret_keys('secret_db_keys.yaml')
-    box_mapping = config['macs']
-    nas_ip = config['nas']['ip']
-    nas_port = config['nas']['port']
-    nas_user = config['nas']['user']
-    remote_path = config['nas']['remote_path']
     app.run_server(debug=False, host='0.0.0.0')
