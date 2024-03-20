@@ -10,10 +10,16 @@ Enabling of i2c ports through `raspi-config` is needed. A python3 installation i
 
 
 > [!CAUTION]
-> Python < 3.8 will need different environment than what's tested in 3.8+. It's recommended that you use a virtual environment!
+> Python < 3.8 will need different environment than what's tested in 3.8+. We have found issues with library incompatibilities. **It's recommended that you use a virtual environment!**
 
+Please see `install.sh`. This will create a virtual environment and set the software in a proper way. You can also manually `pip install` using:
 
-These required libraries were installed as:
+```
+pip install adafruit-circuitpython-bh1750==1.1.0 adafruit-circuitpython-busdevice==5.1.8 adafruit-circuitpython-HTU21D==0.11.4 adafruit-circuitpython-register==1.9.8 adafruit-circuitpython-typing==1.7.0 RPi.GPIO==0.7.0
+
+```
+
+If you want to use the latest libraries (not recommended), the required libraries can be installed as:
 
 ```
 sudo apt-get install python-rpi.gpio
@@ -24,6 +30,8 @@ sudo pip3 install numpy
 sudo pip3 install adafruit-circuitpython-htu21d
 sudo pip3 install adafruit-circuitpython-bh1750
 ```
+
+
 
 ### Hardware
 
@@ -71,6 +79,34 @@ Data will be saved into the `dist/` folder when using `house` this way.
 
 > Beware you might need to edit the path! The provided desktop is hardcoded to `/home/pi/house/dist/house`. If your user or path differs, you will need to tweak this.
 
+
+## Data Base Sync
+
+Very preliminary syncing to a database (this project uses a Synology NAS but should work with other Linux enabled systems).
+This process was kept manual for security reasons, but it could be automated if the user wants to use `sshpass` during setup. Since it's once per device, it might be good to do it manually.
+
+```
+# on each RPi
+ssh-keygen -t rsa -b 2048 -N "" -f ~/.ssh/id_rsa # key might already exist, you don't need to overwrite it
+ssh-copy-id -i ~/.ssh/id_rsa.pub -p port user@database_ip 
+# test that you can access
+ssh -p 'port' 'user@database_ip'
+exit # <- exit out of the database
+
+```
+
+Copy and manually modify your keys
+
+```
+cp db_keys.yaml secret_db_keys.yaml
+nano secret_db_keys.yaml
+# edit your file here
+```
+
+## Dashboard App
+
+A very preliminar dashboard app was made to get data from the server and display it on a table.
+You are also advised to run this from a virtual environment with dash (see `dash_requirements.txt`).
 
 ## Contribute
 
