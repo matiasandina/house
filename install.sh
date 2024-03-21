@@ -25,28 +25,40 @@ echo "Creating virtual environment..."
 python3 -m venv "$PROJECT_DIR/$VENV_NAME"
 source "$PROJECT_DIR/$VENV_NAME/bin/activate"
 
-# Install dependencies within the virtual environment
+# Ensure wheel is installed before other dependencies
+echo "Ensuring wheel is installed..."
+pip3 install wheel
+
+# Install dependencies within the virtual environment from requirements file
 echo "Installing dependencies from $REQUIREMENTS_FILE..."
 pip3 install -r "$REQUIREMENTS_FILE"
 
 # Create launcher script
 echo "Creating launcher script..."
 echo "#!/bin/bash
+
+# Define the project directory
+PROJECT_DIR=\"$PROJECT_DIR\"
+
+# Change to the project directory
+cd \"\$PROJECT_DIR\"
+
 # Activate virtual environment
-source '$PROJECT_DIR/$VENV_NAME/bin/activate'
+source '\$PROJECT_DIR/$VENV_NAME/bin/activate'
 
 # Run the Python script with an identifier and elevated privileges
-exec -a House sudo python3 '$PROJECT_DIR/$SCRIPT_NAME'
+exec -a House sudo python3 '\$PROJECT_DIR/$SCRIPT_NAME'
 " > "$PROJECT_DIR/launch_house.sh"
 
 chmod +x "$PROJECT_DIR/launch_house.sh"
+
 
 # Copy the desktop entry to the desktop
 echo "Setting up desktop entry..."
 cp "$PROJECT_DIR/$DESKTOP_ENTRY" "$DESKTOP_PATH/$DESKTOP_ENTRY"
 
 # Make sure the Exec line in the desktop entry points to the launcher script
-sed -i "s|Exec=.*|Exec=$PROJECT_DIR/launch_house.sh|" "$DESKTOP_PATH/$DESKTOP_ENTRY"
+#sed -i "s|Exec=.*|Exec=$PROJECT_DIR/launch_house.sh|" "$DESKTOP_PATH/$DESKTOP_ENTRY"
 
 echo "Installation complete. You can run the application from the desktop icon or by executing ./launch_house.sh in the terminal."
 
