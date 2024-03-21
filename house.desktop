@@ -2,7 +2,7 @@
 Type=Application
 Comment=house
 Name=house
-Exec=/home/pi/house/launch_house.sh
+Exec=lxterminal -e "/bin/bash -c '/home/pi/house/launch_house.sh'"
 Icon=/home/pi/house/img/house_logo.png
 Terminal=false
 Categories=Utility
