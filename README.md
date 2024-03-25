@@ -108,6 +108,15 @@ nano secret_db_keys.yaml
 A very preliminar dashboard app was made to get data from the server and display it on a table.
 You are also advised to run this from a virtual environment with dash (see `dash_requirements.txt`).
 
+```
+python -m venv temp_sync
+# linux
+$ source temp_sync/bin/activate
+# Windows cmd.exe
+C:\> temp_sync\Scripts\activate.bat
+pip install -r dash_requirements.txt
+```
+
 ## Contribute
 
 This is a preliminary release. File issues to contribute to this project. 
