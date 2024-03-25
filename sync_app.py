@@ -115,7 +115,7 @@ def fetch_nas_data(nas_ip, nas_port, username, password, remote_path):
         console.info(f"Got {lux_last_line}")
         _, lux = lux_last_line.split(",") 
         data[mac] = {
-            "timestamp": datetime.datetime.strptime(timestamp, '%Y-%m-%dT%H:%M:%S.%f'),
+            "timestamp": datetime.datetime.strptime(timestamp, '%Y-%m-%dT%H:%M:%S'),
             "temp": round(float(temp), 1),
             "hum": round(float(hum), 1),
             "lux": round(float(lux), 1)
