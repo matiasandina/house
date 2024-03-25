@@ -35,16 +35,21 @@ pip3 install -r "$REQUIREMENTS_FILE"
 
 # Create launcher script
 echo "Creating launcher script..."
-echo "#!/bin/bash
+cat <<EOF > "$PROJECT_DIR/launch_house.sh"
+#!/bin/bash
 
 # Define the project directory
-PROJECT_DIR=\"$PROJECT_DIR\"
+PROJECT_DIR="$PROJECT_DIR"
 
 # Change to the project directory
-cd \"\$PROJECT_DIR\"
+cd "\$PROJECT_DIR" || exit
 
 # Activate virtual environment
-source '\$PROJECT_DIR/$VENV_NAME/bin/activate'
+source "\$PROJECT_DIR/$VENV_NAME/bin/activate" || exit
+
+# Run the Python script with an identifier and elevated privileges
+exec -a House sudo python3 "\$PROJECT_DIR/$SCRIPT_NAME"
+EOF
 
 # Run the Python script with an identifier and elevated privileges
 exec -a House sudo python3 '\$PROJECT_DIR/$SCRIPT_NAME'
