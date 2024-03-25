@@ -33,7 +33,7 @@ class Thermometer(object):
         self.drawfont = "pixelmix.ttf"
         self.sleep_secs = 30
         self.sync_data = sync_data
-        if self.sync_sync_data:
+        if self.sync_data:
             self.data_syncer = DataSyncer(sync_key_path)
         # Initial setup that does not involve hardware resources
         # can be done here.
