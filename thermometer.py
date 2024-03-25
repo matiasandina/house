@@ -19,9 +19,12 @@ from adafruit_htu21d import HTU21D
 import os
 import numpy as np
 import datetime
+from sync import DataSyncer
+import paramiko
+import yaml
 
 class Thermometer(object):
-    def __init__(self, save_data=False, save_mins=1):
+    def __init__(self, save_data=False, save_mins=1, sync_data=False, sync_key_path = 'secret_db_keys.yaml'):
         """Initialize the Thermometer with basic configuration."""
         self.save_data = save_data
         self.save_mins = save_mins
@@ -29,7 +32,9 @@ class Thermometer(object):
         self.savedir = "data"
         self.drawfont = "pixelmix.ttf"
         self.sleep_secs = 30
-
+        self.sync_data = sync_data
+        if self.sync_sync_data:
+            self.data_syncer = DataSyncer(sync_key_path)
         # Initial setup that does not involve hardware resources
         # can be done here.
 
@@ -75,7 +80,7 @@ class Thermometer(object):
         s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
         s.connect(("8.8.8.8", 80))
         ip = s.getsockname()[0]
-        s.close()
+        s.close()data_syncer = DataSyncer(config_path)
         return ip
 
     def signal_handler(self, sig, frame):
@@ -153,7 +158,11 @@ class Thermometer(object):
         self.measure()
         self.report()
         if self.save_data:
+            # save to csv
             self.save()
+            if self.sync_data:
+                # sync to db if needed
+                self.data_syncer.sync()
 
 
 if __name__ == '__main__':
