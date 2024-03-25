@@ -157,7 +157,7 @@ class Thermometer(object):
             self.write_csv()
             self.last_save = self.current_time
         if self.sync_data:
-            self.sync()
+            self.data_syncer.sync()
 
 
     def step(self):
