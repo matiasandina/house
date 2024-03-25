@@ -33,7 +33,7 @@ try:
     device = ssd1306(serial, rotate=0)
     print("ssd1306 Device initialized")
     while True:
-        print("Trying to draw from on device")
+        print("Trying to draw on device")
         with canvas(device) as draw:
             draw.rectangle(device.bounding_box, outline="white", fill="black")
             font = ImageFont.truetype(drawfont, 10)
@@ -42,7 +42,7 @@ try:
             font = ImageFont.truetype(drawfont, 16)
             draw.text((5, 20), "Hello,", fill="white", font=font)
             draw.text((5, 42), "World!", fill="white", font=font)
-    sleep(1)
+    time.sleep(1)
 except DeviceNotFoundError:
     print("I2C mini OLED display not found.")
     sys.exit(1)
