@@ -31,8 +31,9 @@ try:
     signal.signal(signal.SIGINT, signal_handler)
     serial = i2c(port=1, address=0x3C)
     device = ssd1306(serial, rotate=0)
-
+    print("ssd1306 Device initialized")
     while True:
+        print("Trying to draw from on device")
         with canvas(device) as draw:
             draw.rectangle(device.bounding_box, outline="white", fill="black")
             font = ImageFont.truetype(drawfont, 10)
