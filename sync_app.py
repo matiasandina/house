@@ -59,7 +59,7 @@ def generate_table(data, box_mapping):
         temp_f = round(convert_c_to_f(details['temp']), 1)
         rows.append(html.Tr([
             html.Td(box_name),
-            html.Td(details['timestamp'].time()),
+            html.Td(details['timestamp'].replace(microsecond = 0).time()),
             html.Td(mac),
             html.Td(details['temp']),
             html.Td(temp_f),
