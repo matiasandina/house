@@ -29,7 +29,7 @@ def read_last_line(file_path):
 def get_latest_data(base_path):
     today = datetime.datetime.now().strftime("%Y/%m/%d")
     data = {}
-    target_path = f"{base_path}/*/data/data/{today}"
+    target_path = f"{base_path}/*/data/{today}"
     console.info(f"Searching target path {target_path}")
     for path in glob.glob(target_path):
         print(path)
@@ -97,8 +97,8 @@ def fetch_nas_data(nas_ip, nas_port, username, password, remote_path):
     # Step 3 & 4: For each folder, build path for today's data and request the tail of CSVs
     for mac in mac_folders:
         print(f"[{datetime.datetime.now()}] Fetching Data for mac {mac}")
-        temp_hum_path = f"{remote_path}/{mac}/data/data/{today}/temp_hum.csv"
-        lux_path = f"{remote_path}/{mac}/data/data/{today}/lux.csv"
+        temp_hum_path = f"{remote_path}/{mac}/data/{today}/temp_hum.csv"
+        lux_path = f"{remote_path}/{mac}/data/{today}/lux.csv"
         #print(temp_hum_path)
         #print(lux_path)
         # Fetch last line of temp_hum.csv

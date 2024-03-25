@@ -32,12 +32,13 @@ class DataSyncer:
             print(f"Created {remote_dir}")
         
         # Use rsync to sync the data directory
-        #rsync_command = f"rsync -avz -e 'ssh -p {self.nas_port}' {self.local_path}/ {self.nas_user}@{self.nas_ip}:{remote_dir}"
-        #os.system(rsync_command)
-        scp_command = f"scp -r -P {self.nas_port} {self.local_path}/ {self.nas_user}@{self.nas_ip}:{remote_dir}"
-        print(f"Trying to send data via scp")
-        print(scp_command)
-        os.system(scp_command)
+        print("Trying to send data via rsync")
+        rsync_command = f"rsync -avz {self.local_path}/ {self.nas_user}@{self.nas_ip}:{remote_dir}"
+        os.system(rsync_command)
+        #scp_command = f"scp -r -P {self.nas_port} {self.local_path}/ {self.nas_user}@{self.nas_ip}:{remote_dir}"
+        #print(f"Trying to send data via scp")
+        #print(scp_command)
+        #os.system(scp_command)
 
         client.close()
 

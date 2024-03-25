@@ -147,23 +147,26 @@ class Thermometer(object):
              np.savetxt(csvfile, array_to_save, delimiter=',',fmt='%s', comments='')
 
 
-    def save(self):
-        """Save the data to a CSV file if required."""
+    def save_and_sync(self):
+        """
+        Save the data to a CSV file if required. It also sends it via sync()
+        This method handles both, so that we don't have to add self.last_sync and other timing
+        variables that would usually all go together
+        """
         if (self.current_time - self.last_save).total_seconds() > self.save_mins * 60:
             self.write_csv()
             self.last_save = self.current_time
+        if self.sync_data:
+            self.sync()
+
 
     def step(self):
         self.current_time = datetime.datetime.now()
         self.measure()
         self.report()
         if self.save_data:
-            # save to csv
+            # save to csv and sync
             self.save()
-            if self.sync_data:
-                # sync to db if needed
-                self.data_syncer.sync()
-
 
 if __name__ == '__main__':
     with Thermometer(save_data=True, save_mins=0.1) as temp:
