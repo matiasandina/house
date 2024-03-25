@@ -21,38 +21,55 @@ import numpy as np
 import datetime
 
 class Thermometer(object):
-    """docstring for Thermometer"""
-    def __init__(self, save_data = False, save_mins=1):
+    def __init__(self, save_data=False, save_mins=1):
+        """Initialize the Thermometer with basic configuration."""
         self.save_data = save_data
         self.save_mins = save_mins
-    def __enter__(self):
-        self.drawfont = "pixelmix.ttf"
-        self.sleep_secs = 30
-        self.last_save = datetime.datetime.now()
-        self.current_time = datetime.datetime.now()
         self.filename = "temp_hum.csv"
         self.savedir = "data"
-        # Create library object using our Bus I2C port
+        self.drawfont = "pixelmix.ttf"
+        self.sleep_secs = 30
+
+        # Initial setup that does not involve hardware resources
+        # can be done here.
+
+    def __enter__(self):
+        """Setup hardware resources and prepare the device."""
         self.i2c_port = busio.I2C(board.SCL, board.SDA)
         try:
-            signal.signal(signal.SIGINT, self.signal_handler)
-            # screen connected to first of the first 3 slots on hat
+            self.temp_sensor = HTU21D(self.i2c_port)
+            print("HTU21D sensor initialized")
+        except ValueError:
+            print("Temperature sensor not found.")
+            sys.exit(1)
+
+        try:
             self.serial = i2c(port=1, address=0x3C)
             self.oled_device = ssd1306(self.serial, rotate=0)
+            print("OLED display initialized")
         except DeviceNotFoundError:
             print("I2C mini OLED display not found.")
             sys.exit(1)
-        try:
-            self.temp_sensor = HTU21D(self.i2c_port)
-            print("Running temp/hum from HTU21D sensor")
-        except ValueError:
-            print("Temperature sensor not found")
-            sys.exit(1)
+
+        self.last_save = datetime.datetime.now()
+        self.current_time = datetime.datetime.now()
+        signal.signal(signal.SIGINT, self.signal_handler)
+        # Additional setup can be performed here.
         return self
 
     def __exit__(self, exc_type, exc_val, exc_tb):
-        # TODO: Cleanup the i2c/ssd devices
+        """Clean up resources here."""
         print("\nThermometer() via __exit__()")
+        print("Cleaning up resources.")
+        # Cleanup for OLED display
+        if hasattr(self, 'oled_device') and self.oled_device:
+            self.oled_device.cleanup()
+            print("OLED display cleaned up.")
+        # Reset HTU21D sensor object
+        if hasattr(self, 'temp_sensor'):
+            self.temp_sensor = None
+        # Reset any signal handlers to default behavior
+        signal.signal(signal.SIGINT, signal.SIG_DFL)
 
     def getIP(self):
         s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
