@@ -80,7 +80,7 @@ class Thermometer(object):
         s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
         s.connect(("8.8.8.8", 80))
         ip = s.getsockname()[0]
-        s.close()data_syncer = DataSyncer(config_path)
+        s.close()
         return ip
 
     def signal_handler(self, sig, frame):
