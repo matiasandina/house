@@ -166,7 +166,7 @@ class Thermometer(object):
         self.report()
         if self.save_data:
             # save to csv and sync
-            self.save()
+            self.save_and_sync()
 
 if __name__ == '__main__':
     with Thermometer(save_data=True, save_mins=0.1) as temp:
