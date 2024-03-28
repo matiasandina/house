@@ -142,12 +142,14 @@ def update_metrics(n):
     pprint.PrettyPrinter(depth=4).pprint(data)
     return [generate_table(data, box_mapping)]
 
+update_interval_min = 5
+update_interval_ms = update_interval_min * 60 * 1000
 app.layout = html.Div([
     html.H1('Sensor Data Dashboard'),
     html.Div(id='live-update-text'),
     dcc.Interval(
         id='interval-component',
-        interval=1*60000,  # in milliseconds
+        interval=update_interval_ms,  # in milliseconds
         n_intervals=0
     )
 ])
