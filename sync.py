@@ -17,30 +17,30 @@ class DataSyncer:
         self.mac_address = self.get_mac().replace(":", "")
 
     def sync(self):
-        client = paramiko.SSHClient()
-        client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
-        
-        # Assuming you've set up SSH keys for passwordless access
-        print(f"Connecting to {self.nas_user}@{self.nas_ip} at port {self.nas_port}")
-        client.connect(self.nas_ip, port=self.nas_port, username=self.nas_user)
-        # Determine the remote directory path, creating it if necessary
-        remote_dir = os.path.join(self.remote_path, self.mac_address, "data")
-        if not os.path.isdir(remote_dir):
-            print(f"Creating remote directory {remote_dir}")
-            stdin, stdout, stderr = client.exec_command(f'mkdir -p {remote_dir}')
-            stderr.read()  # Wait for the directory creation command to complete
-            print(f"Created {remote_dir}")
-        
-        # Use rsync to sync the data directory
-        print("Trying to send data via rsync")
-        rsync_command = f"rsync -avz {self.local_path}/ {self.nas_user}@{self.nas_ip}:{remote_dir}"
-        os.system(rsync_command)
-        #scp_command = f"scp -r -P {self.nas_port} {self.local_path}/ {self.nas_user}@{self.nas_ip}:{remote_dir}"
-        #print(f"Trying to send data via scp")
-        #print(scp_command)
-        #os.system(scp_command)
-
-        client.close()
+        try:
+            client = paramiko.SSHClient()
+            client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
+            # Assuming you've set up SSH keys for passwordless access
+            print(f"Connecting to {self.nas_user}@{self.nas_ip} at port {self.nas_port}")
+            client.connect(self.nas_ip, port=self.nas_port, username=self.nas_user, timeout=10)
+            # Determine the remote directory path, creating it if necessary
+            remote_dir = os.path.join(self.remote_path, self.mac_address, "data")
+            if not os.path.isdir(remote_dir):
+                print(f"Creating remote directory {remote_dir}")
+                stdin, stdout, stderr = client.exec_command(f'mkdir -p {remote_dir}')
+                stderr.read()  # Wait for the directory creation command to complete
+                print(f"Created {remote_dir}")
+            # Use rsync to sync the data directory
+            print("Trying to send data via rsync")
+            rsync_command = f"rsync -avz {self.local_path}/ {self.nas_user}@{self.nas_ip}:{remote_dir}"
+            os.system(rsync_command)
+            #scp_command = f"scp -r -P {self.nas_port} {self.local_path}/ {self.nas_user}@{self.nas_ip}:{remote_dir}"
+            #print(f"Trying to send data via scp")
+            #print(scp_command)
+            #os.system(scp_command)
+            client.close()
+        except Exception as e:
+            print(f"An error occurred during data synchronization: {e}")
 
     def get_mac(self, interface='wlan0'):
         try:
