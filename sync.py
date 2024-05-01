@@ -1,6 +1,7 @@
 import os
 import paramiko
 import yaml
+import socket
 
 class DataSyncer:
     def __init__(self, config_path):
@@ -39,6 +40,8 @@ class DataSyncer:
             #print(scp_command)
             #os.system(scp_command)
             client.close()
+        except (paramiko.SSHException, socket.error) as se:
+            print(f"An SSH or network error occurred: {se}")
         except Exception as e:
             print(f"An error occurred during data synchronization: {e}")
 
