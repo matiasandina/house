@@ -10,6 +10,12 @@ import board
 from PIL import Image, ImageDraw, ImageFont
 from adafruit_rgb_display import st7789
 
+def get_string_coords(font_obj, string):
+    '''
+    This is a glorified wrapper of font.font.getsize(string), which returns a tupple. 
+    We will unpack the first element of such tupple
+    '''
+    return font_obj.font.getsize(string)[0]
 
 # Configuration for CS and DC pins (these are FeatherWing defaults on M0/M4):
 cs_pin = digitalio.DigitalInOut(board.CE0)
@@ -87,16 +93,16 @@ while True:
     # Write four lines of text.
     y = top
     draw.text((x, y), IP, font=font, fill="#FFFFFF")
-    y += font.getsize(IP)[1]
+    y += get_string_coords(font, IP)[1]
     draw.text((x, y), CPU, font=font, fill="#FFFF00")
-    y += font.getsize(CPU)[1]
+    y += get_string_coords(font, CPU)[1]
     draw.text((x, y), MemUsage, font=font, fill="#00FF00")
-    y += font.getsize(MemUsage)[1]
+    y += get_string_coords(font, MemUsage)[1]
     draw.text((x, y), Disk, font=font, fill="#0000FF")
-    y += font.getsize(Disk)[1]
+    y += get_string_coords(font, Disk)[1]
     draw.text((x, y), Temp, font=font, fill="#FF00FF")
 
     # Display image.
     disp.image(image, rotation)
-    time.sleep(0.1)
+    time.sleep(1)
 
