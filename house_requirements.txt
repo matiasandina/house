@@ -6,7 +6,6 @@ adafruit-circuitpython-register==1.9.8
 adafruit-circuitpython-typing==1.7.0
 Adafruit-PlatformDetect==3.62.0
 Adafruit-PureIO==1.1.11
-adafruit-circuitpython-rgb-display==3.12.4
 cbor2==5.4.6
 certifi==2024.2.2
 charset-normalizer==3.3.2
@@ -21,7 +20,7 @@ luma.oled==3.8.1
 numpy==1.21.0
 packaging==24.0
 paramiko==2.12.0
-Pillow==10.3.0
+Pillow==9.5.0
 pkg-resources==0.0.0
 pycparser==2.18
 pyftdi==0.54.0
