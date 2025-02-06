@@ -59,9 +59,10 @@ class LightController(object):
             self.i2c_port = board.I2C()
             self.light_sensor = adafruit_bh1750.BH1750(self.i2c_port)
             print("Running light from BH1750 sensor")
-        except ValueError:
-            print("Light sensor not found")
-            sys.exit(1)
+        except Exception as e:
+            print("Warning: Light sensor initialization failed:", e)
+            # Instead of exiting, set sensor to None and log the error
+            self.light_sensor = None
         print(f"Initalizing LightController with lights_on: {self.lights_on}h & lights_off: {self.lights_off}h")
         print("------------------------------")
         return self
