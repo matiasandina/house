@@ -83,19 +83,37 @@ class LightController(object):
         #   pwm_object.ChangeDutyCycle(0)
         self.current_time = datetime.datetime.now()
         current_hour = self.current_time.hour
-        self.lux = round(self.light_sensor.lux)
-        print(f"[{self.current_time.isoformat(' ', timespec='seconds')}] -- {self.lux} lux", end="\r")
-        # evaluate between
-        # this range is [lights_on, lights_off)
+        # Safely read lux value if sensor is available
+        if self.light_sensor:
+            try:
+                self.lux = round(self.light_sensor.lux)
+            except Exception as e:
+                print("Error reading light sensor:", e)
+                # Set a fallback or ignore the lux value
+                self.lux = None
+        else:
+            self.lux = None
+
+        # Print the lux reading (or a message if unavailable)
+        if self.lux is not None:
+            print(f"[{self.current_time.isoformat(' ', timespec='seconds')}] -- {self.lux} lux", end="\r")
+        else:
+            print(f"[{self.current_time.isoformat(' ', timespec='seconds')}] -- no lux data", end="\r")
+
+        # Light control logic – ensure lights remain on during the critical period
         if self.lights_on <= current_hour < self.lights_off:
             self.pwm_blue.ChangeDutyCycle(self.light_duty_cycle)
-            # TODO: implement light modulation to meet target here
         else:
             self.pwm_blue.ChangeDutyCycle(0)
-        if self.save_data:    
+
+        # Save data if enabled, wrapped in try/except to prevent a crash on file I/O issues
+        if self.save_data: 
             if (self.current_time - self.last_save).total_seconds() > self.save_mins * 60:
+                try:
                     self.write_csv()
-                    self.last_save = self.current_time
+                except Exception as e:
+                    print("Error saving lux data:", e)
+    
     def write_csv(self):
         # savedir/year/month/day
         directory = os.path.join(os.getcwd(), self.savedir,
