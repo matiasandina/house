@@ -47,19 +47,17 @@ class Thermometer(object):
         except ValueError:
             print("Temperature sensor not found.")
             sys.exit(1)
-
         try:
+            # Instead of creating a new I2C instance here, use the one you already made.
             self.serial = i2c(port=1, address=0x3C)
             self.oled_device = ssd1306(self.serial, rotate=0)
             print("OLED display initialized")
         except DeviceNotFoundError:
             print("I2C mini OLED display not found.")
             sys.exit(1)
-
         self.last_save = datetime.datetime.now()
         self.current_time = datetime.datetime.now()
         signal.signal(signal.SIGINT, self.signal_handler)
-        # Additional setup can be performed here.
         return self
 
     def __exit__(self, exc_type, exc_val, exc_tb):
@@ -88,18 +86,25 @@ class Thermometer(object):
             sys.exit(0)
 
     def restart_oled(self):
-        """Reinitialize the OLED display."""
+        """Reinitialize the OLED display with proper cleanup and rate limiting."""
         try:
+            # Cleanup the existing OLED instance if it exists.
+            if hasattr(self, 'oled_device') and self.oled_device:
+                try:
+                    self.oled_device.cleanup()
+                except Exception as cleanup_error:
+                    print("Cleanup error on OLED device:", cleanup_error)
+            # Pause briefly to avoid rapid reinitializations.
+            time.sleep(2)
+            # If you have a persistent I2C port from __enter__, reuse it here.
+            # Otherwise, create a new one.
             self.serial = i2c(port=1, address=0x3C)
             self.oled_device = ssd1306(self.serial, rotate=0)
             print("OLED display reinitialized.")
-        except:
-            print("Failed to reinitialize I2C mini OLED display.")
-            print("Unexpected error:", sys.exc_info()[0])
-            print(sys.exc_info()[1])
-            print(sys.exc_info()[2])
-            # do not exit!
-            #sys.exit(2)
+            # Reset any restart attempt counter if you have one.
+            self.oled_restart_attempt = 0
+        except Exception as e:
+            print("Failed to reinitialize I2C mini OLED display:", e)
 
     def measure(self):
         """Measure temperature and humidity."""
@@ -121,13 +126,19 @@ class Thermometer(object):
                 font = ImageFont.truetype(self.drawfont, 10)
                 ip = self.getIP()
                 draw.text((5, 5), "IP: " + ip, fill="white", font=font)
-                font = ImageFont.truetype(self.drawfont, 10)
                 draw.text((5, 20), f"T: {self.temp_value} C -- {self.temp_value_f} F", fill="white", font=font)
                 draw.text((5, 40), f"H: {self.hum_value}%", fill="white", font=font)
         except Exception as e:
             print(f"{self.current_time.isoformat(' ', timespec='seconds')} Error updating display: {e}")
-            print(f"Trying to restart display")
-            self.restart_oled()
+            # Limit the number of restarts per cycle to avoid rapid-fire attempts.
+            if not hasattr(self, 'oled_restart_attempt'):
+                self.oled_restart_attempt = 0
+            self.oled_restart_attempt += 1
+            if self.oled_restart_attempt < 3:  # Allow up to 2 retries
+                print("Attempting to restart OLED display...")
+                self.restart_oled()
+            else:
+                print("Exceeded OLED restart attempts, skipping update this cycle.")
 
     def write_csv(self):
         # savedir/year/month/day
